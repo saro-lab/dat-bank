@@ -1,2 +1,2 @@
-pub mod dat_bank_service;
+pub mod cms;
 pub mod entity;

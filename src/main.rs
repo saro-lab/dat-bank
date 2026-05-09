@@ -5,7 +5,6 @@ use crate::service::entity;
 use axum::extract::connect_info::IntoMakeServiceWithConnectInfo;
 use axum::middleware::from_fn;
 use axum::Router;
-use dat::VERSION_DAT;
 use env::ENV;
 use middleware::logging;
 use std::net::SocketAddr;
@@ -26,7 +25,7 @@ async fn main() {
     cron::bind().await.unwrap();
 
     let listener = tokio::net::TcpListener::bind(format!("0.0.0.0:{}", ENV.port)).await.unwrap();
-    tracing::info!("START {} PORT / DAT BANK {} / DAT {}", ENV.port, ENV.version, VERSION_DAT);
+    tracing::info!("START {} PORT / DAT Certificate Management Service {}", ENV.port, ENV.version);
 
     axum::serve(listener, make_service().await)
         .await.unwrap();

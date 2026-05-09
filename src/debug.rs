@@ -1,21 +1,21 @@
 use crate::api;
 use crate::middleware::database::db_pool;
 use crate::middleware::error::ApiResult;
-use crate::service::dat_bank_service;
+use crate::service::cms;
 use axum::extract::Path;
 use axum::Router;
 use axum::routing::{get, post};
-use dat::dat_bank::DatBank;
-use dat::signature_key::SignatureKeyOutOption;
+use dat::dat_manager::DatManager;
+use dat::dat_signature_key::DatSignatureKeyOutOption;
 
 pub async fn debug_router() -> Router {
     api::router().await
-        .route("/dat", post(to_dat))
-        .route("/dat/{dat}", get(read_dat))
+        .route("/dat", post(issue))
+        .route("/dat/{dat}", get(parse))
 }
 
-async fn to_dat(body: String) -> ApiResult<String> {
-    tracing::info!("POST /dat issue DAT (Debug)");
+async fn issue(body: String) -> ApiResult<String> {
+    tracing::info!("POST /dat issue (Debug)");
 
     let mut plain = String::new();
     let mut secret = String::new();
@@ -38,20 +38,19 @@ async fn to_dat(body: String) -> ApiResult<String> {
         }
     }
 
-    Ok(bank().await?.to_dat(&plain, &secret)?)
+    Ok(manager().await?.issue(&plain, &secret)?)
 }
 
-async fn read_dat(Path(dat): Path<String>) -> ApiResult<String> {
-    tracing::info!("GET /dat Read DAT (Debug)");
-    let payload = bank().await?.to_payload(dat)?.to_string_payload()?;
+async fn parse(Path(dat): Path<String>) -> ApiResult<String> {
+    tracing::info!("GET /dat parse (Debug)");
+    let payload = manager().await?.parse(dat.try_into()?)?.to_string_payload()?;
 
     Ok(format!("{}", payload))
 }
 
-async fn bank() -> ApiResult<DatBank<i64>> {
-    let bank: DatBank<i64> = DatBank::new();
-    let (body, _) = dat_bank_service::get_keys(SignatureKeyOutOption::FULL, db_pool()).await?;
-    bank.import(&body, true)?;
-    Ok(bank)
+async fn manager() -> ApiResult<DatManager> {
+    let manager: DatManager = DatManager::new();
+    let (body, _) = cms::get_certificates(DatSignatureKeyOutOption::FULL, db_pool()).await?;
+    manager.import(&body, true)?;
+    Ok(manager)
 }
-

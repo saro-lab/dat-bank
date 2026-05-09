@@ -1,8 +1,8 @@
 use std::env;
 use std::str::FromStr;
 use std::sync::LazyLock;
-use dat::crypto_algorithm::CryptoAlgorithm;
-use dat::signature_algorithm::SignatureAlgorithm;
+use dat::dat_crypto_algorithm::DatCryptoAlgorithm;
+use dat::dat_signature_algorithm::DatSignatureAlgorithm;
 use dat::util::now_unix_timestamp;
 
 pub static ENV: LazyLock<Env> = LazyLock::new(|| bind());
@@ -15,8 +15,8 @@ pub struct Env {
     pub port: u16,
 
     // algorithm
-    pub signature: SignatureAlgorithm,
-    pub crypto: CryptoAlgorithm,
+    pub signature: DatSignatureAlgorithm,
+    pub crypto: DatCryptoAlgorithm,
 
     // db
     pub db_uri: String,
@@ -39,15 +39,15 @@ pub struct Env {
 fn bind() -> Env {
     let version = env!("CARGO_PKG_VERSION").to_string();
 
-    println!("DAT Bank v{}", version);
+    println!("DAT Certificate Management Service v{}", version);
 
     let hostname = env_str("HOSTNAME", "localhost");
     let port = env_parse("PORT", 8088);
     println!("hostname: {}", hostname);
     println!("port: {}", port);
 
-    let signature = env_parse("SIGNATURE", SignatureAlgorithm::P256);
-    let crypto = env_parse("CRYPTO", CryptoAlgorithm::AES128GCMN);
+    let signature = env_parse("SIGNATURE", DatSignatureAlgorithm::P256);
+    let crypto = env_parse("CRYPTO", DatCryptoAlgorithm::AES128GCMN);
     println!("signature: {}", signature);
     println!("crypto: {}", crypto);
 
