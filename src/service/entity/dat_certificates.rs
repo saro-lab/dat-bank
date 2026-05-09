@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 
 // https://www.sea-ql.org/SeaORM/docs/generate-entity/column-types/
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Deserialize, Serialize)]
-#[sea_orm(table_name = "z_saro_dat_certificate_v1")]
+#[sea_orm(table_name = "z_saro_dat_certificate_v2")]
 pub struct Model {
     #[sea_orm(primary_key)]
     #[sea_orm(column_type = "BigInteger")]
@@ -33,13 +33,13 @@ pub struct Model {
     pub crypto_key: Vec<u8>,
 
     #[sea_orm(column_type = "BigInteger")]
-    pub issue_begin_time: i64,
+    pub dat_issue_begin_time: i64,
 
     #[sea_orm(column_type = "BigInteger")]
-    pub issue_end_time: i64,
+    pub dat_issue_end_time: i64,
 
     #[sea_orm(column_type = "BigInteger")]
-    pub token_ttl: i64,
+    pub dat_ttl: i64,
 
     #[sea_orm(column_type = "BigInteger")]
     pub expire_time: i64,
@@ -58,15 +58,15 @@ impl Model {
             self.certificate_id.to_u64().unwrap(),
             signature_key,
             crypto_key,
-            self.issue_begin_time as u64,
-            self.issue_end_time as u64,
-            self.token_ttl as u64,
+            self.dat_issue_begin_time as u64,
+            self.dat_issue_end_time as u64,
+            self.dat_ttl as u64,
         )?)
     }
 }
 
 impl ActiveModel {
-    pub fn generate(signature_algorithm: DatSignatureAlgorithm, crypto_algorithm: DatCryptoAlgorithm, issue_begin: u64, issue_end: u64, token_ttl: u64) -> Result<Self, DatError> {
+    pub fn generate(signature_algorithm: DatSignatureAlgorithm, crypto_algorithm: DatCryptoAlgorithm, dat_issue_begin: u64, dat_issue_end: u64, dat_ttl: u64) -> Result<Self, DatError> {
         let (signing_key, verifying_key) = DatSignatureKey::generate(signature_algorithm).to_bytes();
         let crypto_key = DatCryptoKey::generate(crypto_algorithm).to_bytes().to_vec();
 
@@ -76,10 +76,10 @@ impl ActiveModel {
             verifying_key: Set(verifying_key.to_vec()),
             crypto_algorithm: Set(crypto_algorithm.to_string()),
             crypto_key: Set(crypto_key),
-            issue_begin_time: Set(issue_begin as i64),
-            issue_end_time: Set(issue_end as i64),
-            token_ttl: Set(token_ttl as i64),
-            expire_time: Set((issue_end + token_ttl) as i64),
+            dat_issue_begin_time: Set(dat_issue_begin as i64),
+            dat_issue_end_time: Set(dat_issue_end as i64),
+            dat_ttl: Set(dat_ttl as i64),
+            expire_time: Set((dat_issue_end + dat_ttl) as i64),
             ..Default::default()
         })
     }

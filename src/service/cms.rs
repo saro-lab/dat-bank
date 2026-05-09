@@ -19,7 +19,7 @@ pub async fn get_certificates<C: ConnectionTrait>(signature_key_out_option: DatS
 
 pub async fn generate<C: ConnectionTrait>(db: &C) -> ApiResult<(NewCertificateId, DeleteCount)> {
     let delete_count = cleanup_expired(db).await?;
-    let certificate_id = dat_certificates::ActiveModel::generate(ENV.signature, ENV.crypto, ENV.issue_begin(), ENV.issue_end(), ENV.token_ttl)?
+    let certificate_id = dat_certificates::ActiveModel::generate(ENV.signature, ENV.crypto, ENV.issue_begin(), ENV.issue_end(), ENV.dat_ttl)?
         .save(db).await?.certificate_id.unwrap();
     Ok((certificate_id, delete_count))
 }
