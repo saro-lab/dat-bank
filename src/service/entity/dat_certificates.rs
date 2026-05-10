@@ -67,7 +67,7 @@ impl Model {
 
 impl ActiveModel {
     pub fn generate(signature_algorithm: DatSignatureAlgorithm, crypto_algorithm: DatCryptoAlgorithm, dat_issue_begin: u64, dat_issue_end: u64, dat_ttl: u64) -> Result<Self, DatError> {
-        let (signing_key, verifying_key) = DatSignatureKey::generate(signature_algorithm).to_bytes();
+        let (signing_key, verifying_key) = DatSignatureKey::generate(signature_algorithm)?.to_bytes();
         let crypto_key = DatCryptoKey::generate(crypto_algorithm).to_bytes().to_vec();
 
         Ok(ActiveModel {
