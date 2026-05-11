@@ -1,5 +1,5 @@
-use sea_orm::{ConnectionTrait, DatabaseConnection, Schema};
 use crate::middleware::error::ApiResult;
+use sea_orm::{ConnectionTrait, DatabaseConnection, Schema};
 
 pub mod dat_certificates;
 

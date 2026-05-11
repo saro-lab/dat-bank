@@ -1,12 +1,12 @@
-use dat::dat_signature_key::DatSignatureKeyOutOption;
 use crate::entity::dat_certificates;
 use crate::env::ENV;
 use crate::middleware::error::ApiResult;
+use dat::signature_key::DatSignatureKeyOutOption;
 use dat::util::now_unix_timestamp;
 use sea_orm::{ActiveModelTrait, ColumnTrait, ConnectionTrait, EntityTrait, QueryFilter};
 
 pub(crate) type CertificateCount = usize;
-pub(crate) type NewCertificateId = i64;
+pub(crate) type NewCid = i64;
 pub(crate) type DeleteCount = u64;
 
 pub async fn get_certificates<C: ConnectionTrait>(signature_key_out_option: DatSignatureKeyOutOption, db: &C) -> ApiResult<(String, CertificateCount)> {
@@ -17,11 +17,11 @@ pub async fn get_certificates<C: ConnectionTrait>(signature_key_out_option: DatS
     Ok((certificates.join("\n"), count))
 }
 
-pub async fn generate<C: ConnectionTrait>(db: &C) -> ApiResult<(NewCertificateId, DeleteCount)> {
+pub async fn generate<C: ConnectionTrait>(db: &C) -> ApiResult<(NewCid, DeleteCount)> {
     let delete_count = cleanup_expired(db).await?;
-    let certificate_id = dat_certificates::ActiveModel::generate(ENV.signature, ENV.crypto, ENV.issue_begin(), ENV.issue_end(), ENV.dat_ttl)?
-        .save(db).await?.certificate_id.unwrap();
-    Ok((certificate_id, delete_count))
+    let cid = dat_certificates::ActiveModel::generate(ENV.signature, ENV.crypto, ENV.issue_begin(), ENV.issue_end(), ENV.dat_ttl)?
+        .save(db).await?.cid.unwrap();
+    Ok((cid, delete_count))
 }
 
 async fn cleanup_expired<C: ConnectionTrait>(db: &C) -> ApiResult<u64> {

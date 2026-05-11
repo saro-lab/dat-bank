@@ -848,9 +848,9 @@ dependencies = [
 
 [[package]]
 name = "dat"
-version = "2.1.0"
+version = "2.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "db2f5c20eb88cb8cc670ecf7e002c9c0ecd9983a08ca9da6111cb199c4034200"
+checksum = "93e9bf9e9acda57a9cd62b093e824e14590a646124ca90fecac53f723c18888e"
 dependencies = [
  "aes-gcm",
  "aws-lc-rs",
@@ -867,7 +867,7 @@ dependencies = [
 
 [[package]]
 name = "dat-cms"
-version = "2.1.0"
+version = "2.2.0"
 dependencies = [
  "axum",
  "dat",

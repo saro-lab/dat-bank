@@ -1,4 +1,5 @@
 use crate::env::ENV;
+use crate::middleware::error::{ApiError, ApiResult};
 use sea_orm::{ConnectOptions, Database, DatabaseConnection, DbErr};
 use std::fs;
 use std::fs::File;
@@ -6,7 +7,6 @@ use std::path::Path;
 use std::sync::LazyLock;
 use std::time::Duration;
 use tokio::sync::OnceCell;
-use crate::middleware::error::{ApiError, ApiResult};
 
 static DB_POOL: LazyLock<OnceCell<DatabaseConnection>> = LazyLock::new(|| OnceCell::new());
 

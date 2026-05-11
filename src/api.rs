@@ -4,8 +4,8 @@ use crate::middleware::error::ApiResult;
 use crate::service::cms;
 use axum::routing::{get, post};
 use axum::{Extension, Router};
+use dat::signature_key::DatSignatureKeyOutOption;
 use std::net::IpAddr;
-use dat::dat_signature_key::DatSignatureKeyOutOption;
 
 pub async fn router() -> Router {
     Router::new()
@@ -21,8 +21,8 @@ async fn health() -> &'static str { "OK" }
 async fn version() -> &'static str { &ENV.version }
 
 pub async fn generate_key(Extension(ip_addr): Extension<IpAddr>) -> ApiResult<String> {
-    let (new_certificate_id, delete_count) = cms::generate(db_pool()).await?;
-    tracing::info!("{ip_addr} GENERATE CERTIFICATE [{new_certificate_id:x}] / DELETE {delete_count} CERTIFICATES");
+    let (new_cid, delete_count) = cms::generate(db_pool()).await?;
+    tracing::info!("{ip_addr} GENERATE CERTIFICATE [{new_cid:x}] / DELETE {delete_count} CERTIFICATES");
     Ok("OK".to_string())
 }
 

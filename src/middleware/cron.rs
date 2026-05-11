@@ -1,8 +1,8 @@
 use crate::env::ENV;
-use tokio_cron_scheduler::{Job, JobScheduler};
 use crate::middleware::database::db_pool;
 use crate::middleware::error::ApiResult;
 use crate::service::cms;
+use tokio_cron_scheduler::{Job, JobScheduler};
 
 pub async fn bind() -> ApiResult<()> {
     if !ENV.cron {

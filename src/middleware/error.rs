@@ -1,9 +1,9 @@
 use axum::http::StatusCode;
+use axum::response::{IntoResponse, Response};
 use dat::error::DatError;
 use sea_orm::DbErr;
 use std::fmt;
 use std::fmt::Display;
-use axum::response::{IntoResponse, Response};
 
 pub type ApiResult<T> = Result<T, ApiError>;
 const TEXT_PLAIN: &[(&str, &str); 2] = &[("Content-Type", "text/plain"), ("Err", "")];
